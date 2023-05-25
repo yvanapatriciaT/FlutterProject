@@ -16,4 +16,5 @@ For help getting started with Flutter development, view the
 samples, guidance on mobile development, and a full API reference.
 
 ## Maquette
-(https://github.com/yvanapatriciaT/FlutterProject/assets/83289246/a54e213d-fad1-4704-bc3d-1d264fc395bd)
+![MicrosoftTeams-image (2)](https://github.com/yvanapatriciaT/FlutterProject/assets/101006561/5fe4c3c6-7d92-4f5f-a7c3-8fd1ef9f7a81)
+
