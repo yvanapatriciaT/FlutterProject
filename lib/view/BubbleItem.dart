@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class BubbleItem extends StatelessWidget {
   final String titre;
-  final String deadLine;
+  final DateTime deadLine;
   final String description;
 
 
@@ -25,14 +26,14 @@ class BubbleItem extends StatelessWidget {
               left: 0, // à gauche
               child: Text(
                 titre,
-                style: TextStyle(fontSize: 18, color: Colors.white),
+                style: const TextStyle(fontSize: 18, color: Colors.white),
               ),
             ) ,//Positioned pour définir sa position dans le Stack
             Positioned(
               top: 0, //en haut
               right: 0, // à droite
               child: Text(
-                deadLine,
+                DateFormat('yyyy-MM-dd').format(deadLine),
                 style: const TextStyle(fontSize: 18, color: Colors.white),
               ),
             ),
