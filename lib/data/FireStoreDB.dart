@@ -7,6 +7,12 @@ class FireStoreBD {
 
   //ajout de async et await pour attendre que Firebase.initializeApp() se termine avant de continuer l'exécution de l'application
 
+  Stream<List<Task>> streamTasks() {
+    return db.collection('tasks').snapshots().map((querySnapshot) {
+      return querySnapshot.docs.map((doc) => Task.fromSnapshot(doc)).toList();
+    });
+  }
+
   void addTask(Task task) async {
     try {
       DocumentReference documentReference = await db.collection('tasks').add({
@@ -23,11 +29,10 @@ class FireStoreBD {
   }
 
   // Méthode pour mettre à jour une tâche dans Firestore
-  //ajouter id a task??
   Future<void> updateTask(Task task) async {
     try {
       await db.collection('tasks').doc(task.id).update({
-        'title': task.titre,
+        'titre': task.titre,
         'description': task.description,
         'deadline': task.deadline,
       });
@@ -66,6 +71,17 @@ class FireStoreBD {
   }
 
   Future<List<Task>> fetchTasks() async {
+    try {
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('tasks').get();
+      List<Task> tasks = querySnapshot.docs.map((doc) => Task.fromSnapshot(doc)).toList();
+      return tasks;
+    } catch (e) {
+      print('Erreur lors de la récupération des tâches : $e');
+      return [];
+    }
+  }
+
+  Future<List<Task>> fetchTasks1() async {
     try {
       QuerySnapshot querySnapshot = await db.collection('tasks').get();
       List<Task> tasks = [];
