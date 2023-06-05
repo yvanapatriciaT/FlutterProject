@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:projet_flutter_i2_g5/view/ToDoList.dart';
+import 'package:projet_flutter_i2_g5/view/to_do_list_page.dart';
 
-import '../controller/UpdateTaskController.dart';
+import '../controller/update_task_controller.dart';
 import '../model/Task.dart';
-import 'TextAndField.dart';
+import 'text_and_field.dart';
 
 class UpdateTaskPage extends StatefulWidget {
   final Task task;
@@ -19,12 +19,12 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
+  late UpdateTaskController updateTaskController;
   DateTime selectedDate = DateTime.now();
 
   @override
   void initState() {
     super.initState();
-
     // Affecter un texte initial au TextField
     _titleController.text = widget.task.titre;
     _dateController.text = DateFormat('yyyy-MM-dd').format(widget.task.deadline);
@@ -41,8 +41,9 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
 
   @override
   Widget build(BuildContext context) {
-    UpdateTaskController updateTaskController = UpdateTaskController( _titleController, _dateController, _descriptionController);
+    updateTaskController = UpdateTaskController( _titleController, _dateController, _descriptionController);
     return Scaffold(
+      backgroundColor: Colors.green[50],
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -85,6 +86,10 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                 ElevatedButton(
                   onPressed:() {
                     updateTaskController.updateTask(widget.task.id);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) =>   const ToDoList()), // aller à la page de modification
+                    );
                   },
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all<Color>(Colors.green), // Pour changer la couleur du bouton
@@ -97,7 +102,7 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                     updateTaskController.cancelTask();
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) =>  const ToDoList()), // aller à la page de modification
+                      MaterialPageRoute(builder: (context) =>   const ToDoList()), // aller à la page de modification
                     );
                   },
                   style: ButtonStyle(
