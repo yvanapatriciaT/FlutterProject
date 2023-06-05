@@ -16,7 +16,7 @@ class BubbleItem extends StatelessWidget {
         padding: const EdgeInsets.all(12.0),
         height: 90,
         decoration: BoxDecoration(
-          color: Colors.green,
+          color: Colors.green[900],
           borderRadius: BorderRadius.circular(20.0),
         ),
         child: Stack(
@@ -43,7 +43,7 @@ class BubbleItem extends StatelessWidget {
               child: Text(
                 description,
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 18, color: Colors.white),
+                style: const TextStyle(fontSize: 18, color: Colors.white),
               ),
             ),
           ],)

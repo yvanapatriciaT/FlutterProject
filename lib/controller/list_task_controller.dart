@@ -7,6 +7,6 @@ class ListTaskController {
 
   Future<List<Task>> listTask (){
     FireStoreBD fireStoreBD = FireStoreBD();
-    return fireStoreBD.fetchTasks();
+    return fireStoreBD.fetchTasks1();
   }
 }
