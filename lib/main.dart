@@ -1,13 +1,13 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:projet_flutter_i2_g5/view/ToDoList.dart';
+import 'package:projet_flutter_i2_g5/view/to_do_list_page.dart';
 
 import 'firebase_options.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(const MaterialApp(
+  runApp( const MaterialApp(
     debugShowCheckedModeBanner: false,
     home:  ToDoList()
   ));
