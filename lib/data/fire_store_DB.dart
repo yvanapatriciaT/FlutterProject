@@ -42,6 +42,7 @@ class FireStoreBD {
     }
   }
 
+  //pour une potentielle fonctionnalité de recherche
   Future<Task?> fetchTask(String documentId) async {
     try {
       DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
@@ -67,17 +68,6 @@ class FireStoreBD {
     } catch (e) {
       print('Erreur lors de la recherche du document : $e');
       return null;
-    }
-  }
-
-  Future<List<Task>> fetchTasks() async {
-    try {
-      QuerySnapshot querySnapshot = await FirebaseFirestore.instance.collection('tasks').get();
-      List<Task> tasks = querySnapshot.docs.map((doc) => Task.fromSnapshot(doc)).toList();
-      return tasks;
-    } catch (e) {
-      print('Erreur lors de la récupération des tâches : $e');
-      return [];
     }
   }
 
