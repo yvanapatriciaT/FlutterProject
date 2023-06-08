@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:projet_flutter_i2_g5/controller/add_task_controller.dart';
-import 'package:projet_flutter_i2_g5/view/to_do_list_page.dart';
+import 'package:projet_flutter_i2_g5/view/tasks_list_page.dart';
 
+import '../data/Fire_store_DB.dart';
+import '../model/Task.dart';
 import 'text_and_field.dart';
 
 class AddTaskPage extends StatefulWidget {
@@ -26,9 +27,35 @@ class _AddTaskPageState extends State<AddTaskPage> {
     super.dispose();
   }
 
+  //callback functions
+
+  void saveTask() {
+    // Récupérer les valeurs des champs et effectuer les actions nécessaires
+    String titre = _titleController.text;
+    DateTime deadline = DateTime.parse(_dateController.text );
+    String description = _descriptionController.text;
+
+    //enregistrer la tâche dans la bd firestore
+    var task = Task(id: "",titre: titre, description: description, deadline: deadline);
+    FireStoreBD().addTask(task);
+
+    // Réinitialiser les champs après avoir enregistré la tâche
+    _titleController.clear();
+    _dateController.clear();
+    _descriptionController.clear();
+
+  }
+
+  void cancelTask() {
+    // Réinitialiser les champs sans enregistrer la tâche
+    _titleController.clear();
+    _dateController.clear();
+    _descriptionController.clear();
+  }
+
+
   @override
   Widget build(BuildContext context) {
-    AddTaskController addTaskController = AddTaskController(context, _titleController, _dateController, _descriptionController);
     return Scaffold(
       backgroundColor: Colors.green[50],
       body: Padding(
@@ -73,7 +100,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    addTaskController.saveTask();
+                    saveTask();
                     // Afficher une boîte de dialogue de succès ou naviguer vers une autre page
                     showDialog(
                       context: context,
@@ -87,7 +114,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                                   Navigator.pop(context); // Fermer la boîte de dialogue
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) =>  const ToDoList()) // Aller à la page d'ajout
+                                    MaterialPageRoute(builder: (context) =>  const TaskListPage()) // Aller à la page d'ajout
                                   );
                                 },
                                 child: const Text('OK'),
@@ -104,10 +131,10 @@ class _AddTaskPageState extends State<AddTaskPage> {
                 const SizedBox(width: 8.0),
                 TextButton(
                   onPressed:() {
-                    addTaskController.cancelTask();
+                    cancelTask();
                     Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) =>  const ToDoList()) // Aller à la page d'ajout
+                        MaterialPageRoute(builder: (context) =>  const TaskListPage()) // Aller à la page d'ajout
                     );
                   },
                   style: ButtonStyle(

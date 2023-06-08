@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:projet_flutter_i2_g5/view/to_do_list_page.dart';
+import 'package:projet_flutter_i2_g5/view/tasks_list_page.dart';
 
-import '../controller/update_task_controller.dart';
+import '../data/Fire_store_DB.dart';
 import '../model/Task.dart';
 import 'text_and_field.dart';
 
@@ -19,7 +19,6 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
-  late UpdateTaskController updateTaskController;
   DateTime selectedDate = DateTime.now();
 
   @override
@@ -39,9 +38,23 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
     super.dispose();
   }
 
+
+  //callback functions
+
+  void updateTask(String id){
+    Task task = Task(id: id, titre: _titleController.text, deadline :  DateTime.parse(_dateController.text ),description:_descriptionController.text);
+    FireStoreBD().updateTask(task);
+  }
+
+  void cancelTask() {
+    // Réinitialiser les champs sans enregistrer la tâche
+    _titleController.clear();
+    _dateController.clear();
+    _descriptionController.clear();
+  }
+
   @override
   Widget build(BuildContext context) {
-    updateTaskController = UpdateTaskController( _titleController, _dateController, _descriptionController);
     return Scaffold(
       backgroundColor: Colors.green[50],
       body: Padding(
@@ -85,10 +98,26 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
               children: [
                 ElevatedButton(
                   onPressed:() {
-                    updateTaskController.updateTask(widget.task.id);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) =>   const ToDoList()), // aller à la page de modification
+                    updateTask(widget.task.id);
+                    showDialog(
+                      context: context,
+                      builder: (context) =>
+                          AlertDialog(
+                            title: const Text('Tâche mise à jour'),
+                            content: const Text('La tâche a été mise à jour avec succès.'),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context); // Fermer la boîte de dialogue
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) =>  const TaskListPage()) // Aller à la page d'ajout
+                                  );
+                                },
+                                child: const Text('OK'),
+                              ),
+                            ],
+                          ),
                     );
                   },
                   style: ButtonStyle(
@@ -99,10 +128,10 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                 const SizedBox(width: 8.0),
                 TextButton(
                   onPressed:() {
-                    updateTaskController.cancelTask();
+                    cancelTask();
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) =>   const ToDoList()), // aller à la page de modification
+                      MaterialPageRoute(builder: (context) =>   const TaskListPage()), // aller à la page de modification
                     );
                   },
                   style: ButtonStyle(

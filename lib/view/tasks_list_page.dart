@@ -1,29 +1,46 @@
 import 'package:flutter/material.dart';
-import 'package:projet_flutter_i2_g5/controller/list_task_controller.dart';
-import 'package:projet_flutter_i2_g5/controller/delete_task_controller.dart';
 import 'package:projet_flutter_i2_g5/view/add_task_page.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-import '../data/FireStoreDB.dart';
+import '../data/fire_store_DB.dart';
+import '../firebase_options.dart';
 import '../model/Task.dart';
 import 'bubble_item.dart';
 import 'update_task_page.dart';
 
-class ToDoList extends StatefulWidget{
-  const ToDoList({Key? key}) : super(key: key);
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  runApp( const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home:  TaskListPage()
+  ));
+}
+
+class TaskListPage extends StatefulWidget{
+  const TaskListPage({Key? key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _ToDoListState();
+  State<StatefulWidget> createState() => _TaskListPageState();
 
 }
 
-class _ToDoListState extends State<ToDoList>{
+class _TaskListPageState extends State<TaskListPage>{
 
-  ListTaskController listTaskController = ListTaskController();
-  DeleteTaskController deleteTaskController = DeleteTaskController();
+  //callback functions
+
+  void deleteTask(String idTask){
+    FireStoreBD().deleteTask(idTask);
+  }
+
+  Future<List<Task>> listTask (){
+    return FireStoreBD().fetchTasks1();
+  }
+
 
   List<Task> tasks = List.empty();
   void getListTasks() async{
-    tasks = await listTaskController.listTask();
+    tasks = await listTask();
   }
 
   @override
@@ -133,7 +150,7 @@ class _ToDoListState extends State<ToDoList>{
             TextButton(
               onPressed: () {
                 // Code pour supprimer la tâche
-                deleteTaskController.deleteTask(idTask);
+                deleteTask(idTask);
                 Navigator.of(context).pop(); // Ferme la boîte de dialogue
               },
               child: const Text('Supprimer'),
