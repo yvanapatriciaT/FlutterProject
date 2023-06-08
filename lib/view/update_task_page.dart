@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:projet_flutter_i2_g5/view/ToDoList.dart';
+import 'package:projet_flutter_i2_g5/view/tasks_list_page.dart';
 
-import '../controller/UpdateTaskController.dart';
+import '../data/Fire_store_DB.dart';
 import '../model/Task.dart';
-import 'TextAndField.dart';
+import 'text_and_field.dart';
 
 class UpdateTaskPage extends StatefulWidget {
   final Task task;
@@ -24,7 +24,6 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
   @override
   void initState() {
     super.initState();
-
     // Affecter un texte initial au TextField
     _titleController.text = widget.task.titre;
     _dateController.text = DateFormat('yyyy-MM-dd').format(widget.task.deadline);
@@ -39,10 +38,25 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
     super.dispose();
   }
 
+
+  //callback functions
+
+  void updateTask(String id){
+    Task task = Task(id: id, titre: _titleController.text, deadline :  DateTime.parse(_dateController.text ),description:_descriptionController.text);
+    FireStoreBD().updateTask(task);
+  }
+
+  void cancelTask() {
+    // Réinitialiser les champs sans enregistrer la tâche
+    _titleController.clear();
+    _dateController.clear();
+    _descriptionController.clear();
+  }
+
   @override
   Widget build(BuildContext context) {
-    UpdateTaskController updateTaskController = UpdateTaskController( _titleController, _dateController, _descriptionController);
     return Scaffold(
+      backgroundColor: Colors.green[50],
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -84,7 +98,27 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
               children: [
                 ElevatedButton(
                   onPressed:() {
-                    updateTaskController.updateTask(widget.task.id);
+                    updateTask(widget.task.id);
+                    showDialog(
+                      context: context,
+                      builder: (context) =>
+                          AlertDialog(
+                            title: const Text('Tâche mise à jour'),
+                            content: const Text('La tâche a été mise à jour avec succès.'),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context); // Fermer la boîte de dialogue
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) =>  const TaskListPage()) // Aller à la page d'ajout
+                                  );
+                                },
+                                child: const Text('OK'),
+                              ),
+                            ],
+                          ),
+                    );
                   },
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all<Color>(Colors.green), // Pour changer la couleur du bouton
@@ -94,10 +128,10 @@ class _UpdateTaskPageState extends State<UpdateTaskPage> {
                 const SizedBox(width: 8.0),
                 TextButton(
                   onPressed:() {
-                    updateTaskController.cancelTask();
+                    cancelTask();
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) =>  const ToDoList()), // aller à la page de modification
+                      MaterialPageRoute(builder: (context) =>   const TaskListPage()), // aller à la page de modification
                     );
                   },
                   style: ButtonStyle(
